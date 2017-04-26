@@ -1,0 +1,430 @@
+Memory  taken for K0 execution is                    [,1]
+"fpc::dbscan" 109028.9
+
+Time  taken for K0 execution is  [1] 272.84
+
+[1] "K0 silhoutee total average is 0.900640 "
+
+[1] "K0 silhoutee all values are "
+Silhouette of 30000 units in 2 clusters from silhouette.default(x = finalclustersoriginal, dist = dist(datamatrixnew)) :
+ Cluster sizes and average silhouette widths:
+       59     29941 
+0.5447022 0.9013412 
+Individual silhouette widths:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.3095  0.9011  0.9214  0.9006  0.9301  0.9364 
+
+Intra and inter cluster distances for K0 is $intracls.complete
+           c1       c2
+[1,] 2007.948 1042.312
+
+$intracls.average
+          c1       c2
+[1,] 598.477 127.2049
+
+$intracls.centroid
+           c1       c2
+[1,] 440.1869 88.03594
+
+$intercls.single
+         c1       c2
+c1  0.00000 18.52158
+c2 18.52158  0.00000
+
+$intercls.complete
+         c1       c2
+c1    0.000 3026.588
+c2 3026.588    0.000
+
+$intercls.average
+         c1       c2
+c1    0.000 1343.322
+c2 1343.322    0.000
+
+$intercls.centroid
+         c1       c2
+c1    0.000 1342.066
+c2 1342.066    0.000
+
+$intercls.ave_to_cent
+         c1       c2
+c1    0.000 1342.522
+c2 1342.522    0.000
+
+$intercls.hausdorff
+         c1       c2
+c1    0.000 1985.276
+c2 1040.381    0.000
+
+$cluster.center
+       [,1]      [,2]     [,3]      [,4]     [,5]
+c1 116.2089 -15.13910 3.694915 1589.0508 5.186441
+c2 124.5727 -10.03932 3.593701  247.0206 6.096490
+
+$cluster.size
+[1]    59 29941
+
+attr(,"class")
+[1] "cls.list"
+
+[1] "**********************************************************************************************************"
+
+Memory  taken for K10 execution is             [,1]
+"dbscanf" 531.9
+
+Time  taken for K10 execution is  [1] 1.78
+
+K10 silhoutee total average is 0.680860 
+K10 silhoutee all values are Silhouette of 2102 units in 2 clusters from silhouette.default(x = thresholdclusters, dist = dist(thresholddata)) :
+ Cluster sizes and average silhouette widths:
+        50       2052 
+-0.3188505  0.7052193 
+Individual silhouette widths:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.7857  0.6816  0.7444  0.6809  0.7720  0.7919 
+
+Intra and inter cluster distances for K10 is $intracls.complete
+           c1       c2
+[1,] 2681.243 646.0684
+
+$intracls.average
+           c1       c2
+[1,] 543.1095 123.2826
+
+$intracls.centroid
+           c1       c2
+[1,] 406.7612 85.69379
+
+$intercls.single
+         c1       c2
+c1 0.000000 9.017576
+c2 9.017576 0.000000
+
+$intercls.complete
+         c1       c2
+c1    0.000 2683.102
+c2 2683.102    0.000
+
+$intercls.average
+         c1       c2
+c1   0.0000 417.6539
+c2 417.6539   0.0000
+
+$intercls.centroid
+         c1       c2
+c1   0.0000 289.0438
+c2 289.0438   0.0000
+
+$intercls.ave_to_cent
+         c1       c2
+c1   0.0000 296.0047
+c2 296.0047   0.0000
+
+$intercls.hausdorff
+         c1      c2
+c1   0.0000 2037.93
+c2 120.6996    0.00
+
+$cluster.center
+       [,1]      [,2]     [,3]     [,4]     [,5]
+c1 108.8199 -18.25485 3.277121 533.7476 5.723358
+c2 125.3153 -10.10399 3.588092 245.2904 6.042778
+
+$cluster.size
+[1]   50 2052
+
+attr(,"class")
+[1] "cls.list"
+
+[1] "**********************************************************************************************************"
+
+Memory  taken for K20 execution is             [,1]
+"dbscanf" 165.1
+
+Time  taken for K20 execution is  [1] 1.38
+
+K20 silhoutee total average is 0.422659 
+K20 silhoutee all values are Silhouette of 957 units in 3 clusters from silhouette.default(x = thresholdclusters, dist = dist(thresholddata)) :
+ Cluster sizes and average silhouette widths:
+        77        106        774 
+-0.3832989  0.3055057  0.5188831 
+Individual silhouette widths:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.6415  0.3877  0.5720  0.4227  0.6503  0.6948 
+
+Intra and inter cluster distances for K20 is $intracls.complete
+           c1       c2       c3
+[1,] 2215.426 356.0369 406.9463
+
+$intracls.average
+           c1       c2      c3
+[1,] 305.0876 118.4764 91.0522
+
+$intracls.centroid
+           c1       c2      c3
+[1,] 211.3436 88.29467 63.7595
+
+$intercls.single
+          c1        c2       c3
+c1  0.000000 14.804055 9.302857
+c2 14.804055  0.000000 9.291674
+c3  9.302857  9.291674 0.000000
+
+$intercls.complete
+         c1        c2        c3
+c1    0.000 2014.2825 2218.6873
+c2 2014.282    0.0000  548.8153
+c3 2218.687  548.8153    0.0000
+
+$intercls.average
+         c1       c2       c3
+c1   0.0000 235.9165 280.1884
+c2 235.9165   0.0000 204.6596
+c3 280.1884 204.6596   0.0000
+
+$intercls.centroid
+          c1        c2       c3
+c1   0.00000  66.98795 232.2759
+c2  66.98795   0.00000 189.0108
+c3 232.27586 189.01081   0.0000
+
+$intercls.ave_to_cent
+         c1       c2       c3
+c1   0.0000 148.6378 238.0280
+c2 148.6378   0.0000 193.0289
+c3 238.0280 193.0289   0.0000
+
+$intercls.hausdorff
+         c1        c2        c3
+c1   0.0000 1670.3589 1812.5241
+c2 119.2495    0.0000  142.2673
+c3 106.2271  236.6842    0.0000
+
+$cluster.center
+       [,1]      [,2]     [,3]     [,4]     [,5]
+c1 102.0828 -12.58014 3.473282 444.8362 6.049199
+c2 152.1308 -10.41807 3.758997 400.3634 6.086977
+c3 123.3862 -10.22718 3.564153 213.5513 6.031485
+
+$cluster.size
+[1]  77 106 774
+
+attr(,"class")
+[1] "cls.list"
+
+[1] "**********************************************************************************************************"
+
+Memory  taken for K25 execution is             [,1]
+"dbscanf" 123.1
+
+Time  taken for K25 execution is  [1] 2.06
+
+K25 silhoutee total average is 0.301031 
+K25 silhoutee all values are Silhouette of 749 units in 3 clusters from silhouette.default(x = thresholdclusters, dist = dist(thresholddata)) :
+ Cluster sizes and average silhouette widths:
+        82        619         48 
+-0.3624509  0.3689308  0.5588503 
+Individual silhouette widths:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.7778  0.1482  0.4436  0.3010  0.5604  0.6833 
+
+Intra and inter cluster distances for K25 is $intracls.complete
+           c1       c2       c3
+[1,] 2044.822 379.4274 220.2315
+
+$intracls.average
+           c1      c2       c3
+[1,] 328.6677 100.605 77.92462
+
+$intracls.centroid
+           c1       c2       c3
+[1,] 245.7024 71.58001 56.28464
+
+$intercls.single
+         c1       c2       c3
+c1  0.00000 10.22773 13.13625
+c2 10.22773  0.00000 11.86975
+c3 13.13625 11.86975  0.00000
+
+$intercls.complete
+         c1        c2        c3
+c1    0.000 1963.2906 2074.2535
+c2 1963.291    0.0000  489.8654
+c3 2074.253  489.8654    0.0000
+
+$intercls.average
+         c1       c2       c3
+c1   0.0000 250.7041 314.5146
+c2 250.7041   0.0000 181.1655
+c3 314.5146 181.1655   0.0000
+
+$intercls.centroid
+         c1       c2       c3
+c1   0.0000 123.6026 289.1151
+c2 123.6026   0.0000 168.3655
+c3 289.1151 168.3655   0.0000
+
+$intercls.ave_to_cent
+         c1       c2       c3
+c1   0.0000 150.5971 301.3680
+c2 150.5971   0.0000 172.1598
+c3 301.3680 172.1598   0.0000
+
+$intercls.hausdorff
+          c1        c2        c3
+c1   0.00000 1584.9607 1920.6976
+c2 102.68592    0.0000  350.1174
+c3  90.66278  115.3027    0.0000
+
+$cluster.center
+       [,1]      [,2]     [,3]      [,4]     [,5]
+c1 137.2105 -12.07144 3.531595 374.19623 5.959084
+c2 121.8335 -10.02229 3.621496 251.57102 6.051555
+c3 148.0835 -12.68892 3.106337  85.28666 6.026008
+
+$cluster.size
+[1]  82 619  48
+
+attr(,"class")
+[1] "cls.list"
+
+[1] "**********************************************************************************************************"
+
+Memory  taken for K50 execution is            [,1]
+"dbscanf" 58.8
+
+Time  taken for K50 execution is  [1] 2.72
+
+K50 silhoutee total average is 0.639893 
+K50 silhoutee all values are Silhouette of 361 units in 2 clusters from silhouette.default(x = thresholdclusters, dist = dist(thresholddata)) :
+ Cluster sizes and average silhouette widths:
+         22         339 
+-0.06791541  0.68582700 
+Individual silhouette widths:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.6371  0.6437  0.7296  0.6399  0.7660  0.7896 
+
+Intra and inter cluster distances for K50 is $intracls.complete
+           c1       c2
+[1,] 1661.529 479.3875
+
+$intracls.average
+           c1       c2
+[1,] 402.2945 113.9944
+
+$intracls.centroid
+           c1       c2
+[1,] 260.4045 79.71141
+
+$intercls.single
+         c1       c2
+c1  0.00000 22.45476
+c2 22.45476  0.00000
+
+$intercls.complete
+         c1       c2
+c1    0.000 1665.963
+c2 1665.963    0.000
+
+$intercls.average
+         c1       c2
+c1   0.0000 374.0524
+c2 374.0524   0.0000
+
+$intercls.centroid
+         c1       c2
+c1   0.0000 268.9681
+c2 268.9681   0.0000
+
+$intercls.ave_to_cent
+         c1       c2
+c1   0.0000 277.8409
+c2 277.8409   0.0000
+
+$intercls.hausdorff
+         c1       c2
+c1   0.0000 1186.859
+c2 211.1888    0.000
+
+$cluster.center
+       [,1]      [,2]     [,3]     [,4]     [,5]
+c1 143.8573 -12.10333 3.526114 509.1709 6.037969
+c2 124.6641 -10.30076 3.582758 240.8945 6.102910
+
+$cluster.size
+[1]  22 339
+
+attr(,"class")
+[1] "cls.list"
+
+[1] "**********************************************************************************************************"
+
+Memory  taken for K60 execution is            [,1]
+"dbscanf" 44.4
+
+Time  taken for K60 execution is  [1] 2.98
+
+K60 silhoutee total average is 0.427652 
+K60 silhoutee all values are Silhouette of 299 units in 2 clusters from silhouette.default(x = thresholdclusters, dist = dist(thresholddata)) :
+ Cluster sizes and average silhouette widths:
+        54        245 
+-0.2724375  0.5819569 
+Individual silhouette widths:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.5528  0.4115  0.5884  0.4277  0.6558  0.6932 
+
+Intra and inter cluster distances for K60 is $intracls.complete
+           c1       c2
+[1,] 1560.448 365.3365
+
+$intracls.average
+           c1       c2
+[1,] 305.8633 100.0727
+
+$intracls.centroid
+           c1       c2
+[1,] 229.1354 70.79525
+
+$intercls.single
+         c1       c2
+c1  0.00000 14.51028
+c2 14.51028  0.00000
+
+$intercls.complete
+         c1       c2
+c1    0.000 1491.236
+c2 1491.236    0.000
+
+$intercls.average
+        c1      c2
+c1   0.000 237.885
+c2 237.885   0.000
+
+$intercls.centroid
+         c1       c2
+c1  0.00000 88.68346
+c2 88.68346  0.00000
+
+$intercls.ave_to_cent
+         c1       c2
+c1   0.0000 132.1416
+c2 132.1416   0.0000
+
+$intercls.hausdorff
+         c1       c2
+c1   0.0000 1126.193
+c2 138.3875    0.000
+
+$cluster.center
+       [,1]      [,2]     [,3]     [,4]     [,5]
+c1 153.4444 -11.20174 3.485557 325.3629 6.080426
+c2 119.5639 -10.28489 3.593321 243.4116 6.060389
+
+$cluster.size
+[1]  54 245
+
+attr(,"class")
+[1] "cls.list"
+
+[1] "**********************************************************************************************************"
+

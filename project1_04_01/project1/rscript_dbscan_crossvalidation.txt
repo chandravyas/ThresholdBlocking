@@ -1,0 +1,89 @@
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(caret)
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+
+testinputnew <- testinput
+
+output_matrix <- matrix( nrow = 1, ncol = 4,dimnames = list(c("Avg Intra Cluster difference"),c("10fold", "20fold","30fold","40fold")))
+
+sink("dbscan_crossvalidation_ouput.txt",split=TRUE)
+for(i in 1:4) {
+
+percenatage<- (1-i*0.1)
+
+smp_size<- floor(percenatage * nrow(testinputnew))
+set.seed(123)
+inTrain <- sample(seq_len(nrow(testinputnew)),size=smp_size)
+
+training <- testinputnew[inTrain,]
+testing <- testinputnew[-inTrain,]
+
+datamatrix <- as.matrix(training)
+my_dist <- distances(datamatrix)
+
+
+
+my_clustering <- sc_clustering(my_dist,250)
+outvalue <- cbind(datamatrix,my_clustering)
+aggdata<- aggregate(cbind(X1,X2,X3,X4,X5) ~ my_clustering,FUN = mean, data=training)
+
+set.seed(123)
+res.fpc <- fpc::dbscan(aggdata[,1:5], eps =125, MinPts = 30)
+clustervalues<-res.fpc$cluster
+clustervalues<-clustervalues+1
+kclust<-as.factor(clustervalues)
+
+hclust.out<-cbind(aggdata,kclust)
+dt1 <- data.frame(outvalue)
+dt2 <- data.frame(subset(hclust.out, select=c("my_clustering","kclust")))
+dt3 <-join(dt1,dt2,type="inner")
+dt4<-subset(dt3, select=c("kclust"))
+dt5<-subset(dt3, select=-c(my_clustering))
+
+modFit <- train(kclust~.,subset(dt3, select=-c(my_clustering)),method="rpart")
+testing$clusters <- predict(modFit,testing)
+
+x<-as.integer(unlist(dt4, use.names = FALSE)) 
+training$clusters<-as.factor(x)
+cls.scatt <- cls.scatt.data(training[,1:5], x,dist="euclidean")
+
+
+cat("\n")
+print(sprintf("For K250 and %d fold validation for training data is",i*10))
+cat("\n")
+print("Intra and Inter cluster distances are \n")
+print(cls.scatt$intracls.average)
+cat("\n")
+print(cls.scatt$intercls.average)
+cat("\n")
+
+joineddata<-rbind(training,testing)
+joineddataclusters<- as.integer(joineddata$clusters)
+cls.scatt1 <- cls.scatt.data(joineddata[,1:5], joineddataclusters,dist="euclidean")
+#print("Intra and Inter cluster distances are")
+#print(cls.scatt1)
+
+cat("\n")
+print(sprintf("For K250 and %d fold validation for training data is",i*10))
+cat("\n")
+print("Intra and Inter cluster distances are \n")
+print(cls.scatt1$intracls.average)
+cat("\n")
+print(cls.scatt1$intercls.average)
+cat("\n")
+
+clusterAverageDifference<-rowMeans(cls.scatt1$intracls.average)-rowMeans(cls.scatt$intracls.average)
+output_matrix[1,i]<-as.numeric(clusterAverageDifference)
+
+print("Final cluster avg difference value is ")
+cat("\n")
+print(clusterAverageDifference)
+cat("\n")
+print("**********************************************************************************************************")
+
+}
+sink()
+write.table(output_matrix, file = "dbscan_crossvalidation_ouput.csv", sep = ",", row.names = TRUE, col.names = TRUE)

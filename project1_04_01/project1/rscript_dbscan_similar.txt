@@ -1,0 +1,66 @@
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(factoextra)
+library(cluster)
+library(fpc)
+library(clv)
+
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+testinputnew <- testinput[sample(1:nrow(testinput), 30000,replace=FALSE),] 
+colnames(testinputnew)<-c("tempo","loudness","time_signature","duration","key")
+datamatrix <- as.matrix(testinputnew)
+my_dist <- distances(datamatrix)
+
+
+
+set.seed(123)
+res.fpc <- fpc::dbscan(datamatrix, eps = 75 , MinPts = 30) 
+clustervalues<-res.fpc$cluster
+clusters<-clustervalues+1
+
+
+my_clustering <- sc_clustering(my_dist, 200)
+outvalue <- cbind(datamatrix,my_clustering)
+aggdata<- aggregate(cbind(tempo,loudness,time_signature,duration,key) ~ my_clustering,FUN = mean, data=testinputnew)
+
+
+fit <- fpc::dbscan(aggdata[,2:6],eps = 75 , MinPts = 30 )
+clust.out <- fit$cluster
+clust.out<-clust.out+1
+kclust <- as.matrix(clust.out)
+	kclust.out <- cbind(kclust, aggdata)
+
+dt1 <- data.frame(outvalue)
+dt2 <- data.frame(kclust.out[,1:2])
+dt3 <-join(dt1,dt2,type="inner")
+clustout<- as.matrix(subset(dt3, select = c(kclust)))
+
+table(clusters,clustout)
+
+
+a<-c(1,2,3,4,5,6,7,8,9,10,11,12,13)
+b<-c(3,5,6,13,7,12,9,8,11,1,4,10,2)
+clustassign<-data.frame(b,a)
+colnames(clustassign)[1]<-"kclust"
+colnames(clustassign)[2]<-"realnumber"
+finalout <-join(data.frame(clustout),clustassign,type="inner")
+finalout_select<- as.matrix(subset(finalout,select=c(realnumber)))
+
+table(clusters,finalout_select)
+confusionMatrix(clusters,finalout_select,mode="everything")
+
+
+sink("dbscan100overlap.txt",split=TRUE)
+print(confusionMatrix(clusters,clustout,mode="everything"))
+print(table(clusters,clustout))
+sink()
+
+10,50,80,150,250
+
+
+        clustout
+clusters     1     2
+       1    62     0
+       2   725 29213

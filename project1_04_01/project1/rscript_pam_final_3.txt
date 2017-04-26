@@ -1,0 +1,120 @@
+#working 
+
+#hybrid
+pamf<-function(x){	
+my_clustering <- sc_clustering(my_dist, x)
+outvalue <- cbind(datamatrix,my_clustering)
+aggdata<- aggregate(cbind(tempo,loudness,time_signature,duration,key) ~ my_clustering,FUN = mean, data=testinputnew)
+ pam.res <- pam(scale(aggdata[,2:6]), 13)
+ kclust<- pam.res$clustering
+ pamclust<- cbind(kclust,aggdata)
+ dt1 <- data.frame(outvalue)
+ dt2 <- data.frame(pamclust[,1:2])
+ dt3 <-join(dt1,dt2,type="inner")
+assign("thresholdclusters",kclust,envir = globalenv())
+assign("thresholddata",aggdata[,2:6],envir = globalenv())
+}
+
+#original
+pamforiginal<-function(){	
+pam.res <- pam(scale(datamatrix), 13)
+assign("finalclustersoriginal",pam.res$clustering,envir = globalenv())
+}
+#common
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(factoextra)
+library(cluster)
+library(fpc)
+library(clv)
+output_matrix <- matrix( nrow = 4, ncol = 13,dimnames = list(c("memory", "time","silhoutte","clusterdist"),c("k0","k10","k20","k25","k50", "k60","k70","k80", "k90","k100","k150","k200","k250")))
+thresholdinput<-c(10,20,25,50,60,70,80,90,100,150,200,250)
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+testinputnew <- testinput[sample(1:nrow(testinput), 30000,replace=FALSE),]
+colnames(testinputnew)<-c("tempo","loudness","time_signature","duration","key")
+datamatrix <- as.matrix(testinputnew)
+my_dist <- distances(datamatrix)
+sink("pam_ouput.txt",split=TRUE)
+
+#original
+Rprof ( tf <- "log.log",  memory.profiling = TRUE )
+  pamforiginal()
+ Rprof ( NULL ) ; 
+ #print ( summaryRprof ( tf,memory = "both" )  )
+temp<- summaryRprof ( tf,memory = "both" )$by.total
+sil <- silhouette(finalclustersoriginal, dist(datamatrix))
+si.sum <- summary(sil)
+cls.scatt <- cls.scatt.data(datamatrix, finalclustersoriginal,dist="euclidean")
+output_matrix[1,1]<-as.numeric(temp[1,]$mem.total)
+output_matrix[2,1]<-as.numeric(temp[1,]$total.time)
+output_matrix[3,1]<-as.numeric(si.sum$avg.width)
+output_matrix[4,1]<-as.numeric(rowMeans(cls.scatt$intracls.average))
+
+cat("Memory  taken for K0 execution is  ")
+print(temp[1,]$mem.total)
+cat("\n")
+cat("Time  taken for K0 execution is  ")
+print(temp[1,]$total.time)
+cat("\n")
+print(sprintf("K0 silhoutee total average is %f ",si.sum$avg.width))
+cat("\n")
+print("K0 silhoutee all values are ")
+print(si.sum)
+cat("\n")
+cat("Intra and inter cluster distances for K0 is ")
+print(cls.scatt)
+cat("\n")
+print("**********************************************************************************************************")
+cat("\n")
+
+
+#hybrid
+
+for(i in 1:length(thresholdinput)) {
+input<-thresholdinput[i]
+Rprof ( tf <- "log1.log",  memory.profiling = TRUE )
+  pamf(input)
+ Rprof ( NULL ) ; 
+ #print ( summaryRprof ( tf,memory = "both" )  )
+temp<- summaryRprof ( tf,memory = "both" )$by.total
+tempnumber<-i+1
+
+output_matrix[1,tempnumber]<-as.numeric(temp[1,]$mem.total)
+output_matrix[2,tempnumber]<-as.numeric(temp[1,]$total.time)
+
+#cat(sprintf("For Given K is %d ..Total execution time is %s Total memory used %s \n",input,temp[1,]$total.time,temp[1,]$mem.total))
+  
+sil <- silhouette(thresholdclusters, dist(thresholddata))
+si.sum <- summary(sil)
+output_matrix[3,tempnumber]<-as.numeric(si.sum$avg.width)
+cls.scatt <- cls.scatt.data(thresholddata, thresholdclusters,dist="euclidean")
+output_matrix[4,tempnumber]<-as.numeric(rowMeans(cls.scatt$intracls.average))
+#cat(sprintf("K value is %d silhoutee total average is %f \n",input,si.sum$avg.width))
+
+
+#print("Intra and Inter cluster distances are")
+#print(cls.scatt)
+#print(rowMeans(cls.scatt$intracls.average))
+
+cat(sprintf("Memory  taken for K%d execution is  ",input))
+print(temp[1,]$mem.total)
+cat("\n")
+cat(sprintf("Time  taken for K%d execution is  ",input))
+print(temp[1,]$total.time)
+cat("\n")
+cat(sprintf("K%d silhoutee total average is %f ",input,si.sum$avg.width))
+cat("\n")
+cat(sprintf("K%d silhoutee all values are ",input))
+print(si.sum)
+cat("\n")
+cat(sprintf("Intra and inter cluster distances for K%d is ",input))
+print(cls.scatt)
+cat("\n")
+print("**********************************************************************************************************")
+cat("\n")
+}
+
+sink()
+write.table(output_matrix, file = "pam_final_ouput.csv", sep = ",", row.names = TRUE, col.names = TRUE)

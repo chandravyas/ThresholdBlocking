@@ -1,0 +1,66 @@
+#working 
+
+pamf<-function(x){	
+my_clustering <- sc_clustering(my_dist, x)
+outvalue <- cbind(datamatrix,my_clustering)
+aggdata<- aggregate(cbind(X1,X2,X3,X4,X5) ~ my_clustering,FUN = mean, data=testinput)
+ pam.res <- pam(scale(aggdata[,2:6]), 13)
+ pamclust<- cbind(pam.res$clustering,aggdata)
+ dt1 <- data.frame(outvalue)
+ dt2 <- data.frame(pamclust[,1:2])
+ dt3 <-join(dt1,dt2,type="inner")
+sil <- silhouette(pam.res$clustering, dist(aggdata[,2:6]))
+si.sum <- summary(sil)
+cat(sprintf("K value is %d silhoutee total average is %f \n",x,si.sum$avg.width))
+cls.scatt <- cls.scatt.data(aggdata[,2:6], pam.res$clustering,dist="euclidean")
+print("Intra and Inter cluster distances are")
+print(cls.scatt)
+}
+
+
+
+
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(factoextra)
+library(cluster)
+library(fpc)
+library(NbClust)
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+datamatrix <- as.matrix(testinput)
+my_dist <- distances(datamatrix)
+start<-40
+input<-start
+for(i in 1:3) {
+Rprof ( tf <- "log.log",  memory.profiling = TRUE )
+  pamf(input)
+ Rprof ( NULL ) ; 
+ #print ( summaryRprof ( tf,memory = "both" )  )
+temp<- summaryRprof ( tf,memory = "both" )$by.total
+cat(sprintf("For Given K is %d ..Total execution time is %s Total memory used %s \n",input,temp[1,]$total.time,temp[1,]$mem.total))
+  input<-(input+(5*i))
+}
+
+
+#Testing
+
+Rprof ( tf <- "log.log",  memory.profiling = TRUE )
+test<-function(){
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(factoextra)
+library(cluster)
+library(fpc)
+library(NbClust)
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+datamatrix <- as.matrix(testinput)
+my_dist <- distances(datamatrix)
+}
+test()
+Rprof ( NULL ) ; print ( summaryRprof ( tf,memory = "both" )  )
+temp<- summaryRprof ( tf,memory = "both" )$by.total
+cat(sprintf("Total execution time is %s Total memory used %s \n",temp[1,]$total.time,temp[1,]$mem.total))

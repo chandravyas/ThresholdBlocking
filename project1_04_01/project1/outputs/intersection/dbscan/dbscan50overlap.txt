@@ -1,0 +1,33 @@
+Confusion Matrix and Statistics
+
+          Reference
+Prediction     1     2
+         1    62     0
+         2   725 29213
+                                         
+               Accuracy : 0.9758         
+                 95% CI : (0.974, 0.9775)
+    No Information Rate : 0.9738         
+    P-Value [Acc > NIR] : 0.01239        
+                                         
+                  Kappa : 0.1428         
+ Mcnemar's Test P-Value : < 2e-16        
+                                         
+            Sensitivity : 0.078780       
+            Specificity : 1.000000       
+         Pos Pred Value : 1.000000       
+         Neg Pred Value : 0.975783       
+              Precision : 1.000000       
+                 Recall : 0.078780       
+                     F1 : 0.146054       
+             Prevalence : 0.026233       
+         Detection Rate : 0.002067       
+   Detection Prevalence : 0.002067       
+      Balanced Accuracy : 0.539390       
+                                         
+       'Positive' Class : 1              
+                                         
+        clustout
+clusters     1     2
+       1    62     0
+       2   725 29213

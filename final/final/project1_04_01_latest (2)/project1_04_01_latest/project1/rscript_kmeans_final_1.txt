@@ -1,0 +1,117 @@
+#working 
+
+#hybrid
+kmeansf<-function(x){	
+my_clustering <- sc_clustering(my_dist, x)
+outvalue <- cbind(datamatrix,my_clustering)
+aggdata<- aggregate(cbind(tempo,loudness,time_signature,duration,key) ~ my_clustering,FUN = mean, data=testinput)
+fit <- kmeans(aggdata[,2:6], 13, iter.max=5, nstart=10)
+clust.out <- fit$cluster
+kclust <- as.matrix(clust.out)
+kclust.out <- cbind(kclust, aggdata)
+dt1 <- data.frame(outvalue)
+dt2 <- data.frame(kclust.out[,1:2])
+dt3 <-join(dt1,dt2,type="inner")
+
+assign("thresholdclusters",clust.out,envir = globalenv())
+assign("thresholddata",aggdata[,2:6],envir = globalenv())
+
+}
+
+#original
+kmeansforiginal<-function(){	
+fit <- kmeans(datamatrix, 13, iter.max=5, nstart=10)
+assign("finalclustersoriginal",fit$cluster,envir = globalenv())
+}
+#common
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(factoextra)
+library(cluster)
+library(fpc)
+library(clv)
+output_matrix <- matrix( nrow = 4, ncol = 13,dimnames = list(c("memory", "time","silhoutte","clusterdist"),c("k0","k15","k20","k25","k50", "k60","k70","k80", "k90","k100","k150","k200","k250")))
+thresholdinput<-c(15,20,25,50,60,70,80,90,100,150,200,250)
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+#testinputnew <- testinput[sample(1:nrow(testinput), 20000,replace=FALSE),]
+colnames(testinput)<-c("tempo","loudness","time_signature","duration","key")
+datamatrix <- as.matrix(testinput)
+my_dist <- distances(datamatrix)
+
+#original
+Rprof ( tf <- "log.log",  memory.profiling = TRUE )
+  kmeansforiginal()
+ Rprof ( NULL ) ; 
+ #print ( summaryRprof ( tf,memory = "both" )  )
+temp<- summaryRprof ( tf,memory = "both" )$by.total
+sil <- silhouette(finalclustersoriginal, dist(datamatrix))
+si.sum <- summary(sil)
+cls.scatt <- cls.scatt.data(datamatrix, finalclustersoriginal,dist="euclidean")
+output_matrix[1,1]<-as.numeric(temp[1,]$mem.total)
+output_matrix[2,1]<-as.numeric(temp[1,]$total.time)
+output_matrix[3,1]<-as.numeric(si.sum$avg.width)
+output_matrix[4,1]<-as.numeric(rowMeans(cls.scatt$intracls.average))
+
+#hybrid
+
+for(i in 1:length(thresholdinput)) {
+input<-thresholdinput[i]
+Rprof ( tf <- "log.log",  memory.profiling = TRUE )
+  kmeansf(input)
+ Rprof ( NULL ) ; 
+ #print ( summaryRprof ( tf,memory = "both" )  )
+temp<- summaryRprof ( tf,memory = "both" )$by.total
+tempnumber<-i+1
+
+output_matrix[1,tempnumber]<-as.numeric(temp[1,]$mem.total)
+output_matrix[2,tempnumber]<-as.numeric(temp[1,]$total.time)
+
+cat(sprintf("For Given K is %d ..Total execution time is %s Total memory used %s \n",input,temp[1,]$total.time,temp[1,]$mem.total))
+  
+sil <- silhouette(thresholdclusters, dist(thresholddata))
+si.sum <- summary(sil)
+output_matrix[3,tempnumber]<-as.numeric(si.sum$avg.width)
+cls.scatt <- cls.scatt.data(thresholddata, thresholdclusters,dist="euclidean")
+output_matrix[4,tempnumber]<-as.numeric(rowMeans(cls.scatt$intracls.average))
+cat(sprintf("K value is %d silhoutee total average is %f \n",input,si.sum$avg.width))
+write.table(output_matrix, file = "kmeans_final_ouput.csv", sep = ",", row.names = TRUE, col.names = TRUE)
+#print("Intra and Inter cluster distances are")
+#print(cls.scatt)
+#print(rowMeans(cls.scatt$intracls.average))
+}
+
+
+
+
+Joining by: my_clustering
+For Given K is 15 ..Total execution time is 31.92 Total memory used 2057.2 
+K value is 15 silhoutee total average is 0.323409 
+Joining by: my_clustering
+For Given K is 20 ..Total execution time is 85.16 Total memory used 1954.1 
+K value is 20 silhoutee total average is 0.320252 
+Joining by: my_clustering
+For Given K is 25 ..Total execution time is 100.66 Total memory used 1827.6 
+K value is 25 silhoutee total average is 0.320678 
+Joining by: my_clustering
+For Given K is 50 ..Total execution time is 117.42 Total memory used 1635.6 
+K value is 50 silhoutee total average is 0.328998 
+Joining by: my_clustering
+For Given K is 60 ..Total execution time is 283.6 Total memory used 1612.5 
+K value is 60 silhoutee total average is 0.325715 
+Joining by: my_clustering
+For Given K is 70 ..Total execution time is 374.42 Total memory used 1592.6 
+K value is 70 silhoutee total average is 0.325150 
+Joining by: my_clustering
+For Given K is 80 ..Total execution time is 370.58 Total memory used 1578.9 
+K value is 80 silhoutee total average is 0.322526 
+Joining by: my_clustering
+For Given K is 90 ..Total execution time is 360.54 Total memory used 1492.4 
+K value is 90 silhoutee total average is 0.324950 
+Joining by: my_clustering
+For Given K is 100 ..Total execution time is 625.94 Total memory used 1519.3 
+K value is 100 silhoutee total average is 0.315317 
+Joining by: my_clustering
+For Given K is 150 ..Total execution time is 485.04 Total memory used 1481.1 
+K value is 150 silhoutee total average is 0.325891 

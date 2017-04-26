@@ -1,0 +1,58 @@
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(caret)
+
+
+input_orig <- read_csv("genredata.csv",col_names = TRUE)
+input_required<- subset(input_orig,select=c(loudness,tempo,time_signature,duration,key,genre))
+#mysample <- input_required[sample(1:nrow(input_required), 200,replace=FALSE),]
+df2 <- lapply(split(input_required, input_required$genre),
+   function(subdf) subdf[sample(1:nrow(subdf), 3),]
+)
+mysample <- do.call('rbind',df2)
+mysample_required<- subset(mysample,select=-c(genre))
+
+
+
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+colnames(testinput)[1]<-"tempo"
+colnames(testinput)[2]<-"loudness"
+colnames(testinput)[3]<-"time_signature"
+colnames(testinput)[4]<-"duration"
+colnames(testinput)[5]<-"key"
+datamatrix <- as.matrix(testinput)
+my_dist <- distances(datamatrix)
+
+my_clustering <- sc_clustering(my_dist, 50)
+outvalue <- cbind(datamatrix,my_clustering)
+aggdata<- aggregate(cbind(X1,X2,X3,X4,X5) ~ my_clustering,FUN = mean, data=testinput)
+fit <- kmeans(aggdata[,2:6], 13, iter.max=5, nstart=10)
+clust.out <- as.factor(fit$cluster)
+kclust <- as.matrix(clust.out)
+kclust.out <- cbind(kclust, aggdata)
+colnames(kclust.out)[3:7]<-colnames(mysample_required)
+modFit <- train(kclust~.,subset(kclust.out, select=-c(my_clustering)),method="rpart")
+predictoutput <- predict(modFit,mysample_required)
+
+
+
+df2 <- lapply(split(input_required, input_required$genre),
+   function(subdf) subdf[sample(1:nrow(subdf), 3),]
+)
+
+
+clusters <- function(x, centers) {
+  # compute squared euclidean distance from each sample to each cluster center
+  tmp <- sapply(seq_len(nrow(x)),
+                function(i) apply(centers, 1,
+                                  function(v) sum((x[i, ]-v)^2)))
+  max.col(-t(tmp))  # find index of min distance
+}
+
+closest.cluster <- function(x) {
+  cluster.dist <- apply(fit$centers, 1, function(y) sqrt(sum((x-y)^2)))
+  return(which.min(cluster.dist)[1])
+}
+clusters2 <- apply(mysample_required, 1, closest.cluster)

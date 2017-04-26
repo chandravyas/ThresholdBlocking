@@ -1,0 +1,69 @@
+data(iris); library(ggplot2)
+inTrain <- createDataPartition(y=iris$Species,
+                              p=0.7, list=FALSE)
+training <- iris[inTrain,]
+testing <- iris[-inTrain,]
+dim(training); dim(testing)
+kMeans1 <- kmeans(subset(training,select=-c(Species)),centers=3)
+training$clusters <- as.factor(kMeans1$cluster)
+modFit <- train(clusters ~.,data=subset(training,select=-c(Species)),method="rpart")
+testClusterPred <- predict(modFit,testing)
+
+
+library(readr)
+library(distances)
+library(plyr)
+library(scclust)
+library(caret)
+testinput <- read_csv("fields_mod.csv",col_names = FALSE)
+smp_size<- floor(0.75 * nrow(testinput))
+set.seed(123)
+inTrain <- sample(seq_len(nrow(testinput)),size=smp_size)
+
+training <- testinput[inTrain,]
+testing <- testinput[-inTrain,]
+
+datamatrix <- as.matrix(training)
+my_dist <- distances(datamatrix)
+
+my_clustering <- sc_clustering(my_dist, 50)
+outvalue <- cbind(datamatrix,my_clustering)
+aggdata<- aggregate(cbind(X1,X2,X3,X4,X5) ~ my_clustering,FUN = mean, data=training)
+fit <- kmeans(aggdata[,2:6], 13, iter.max=5, nstart=10)
+clust.out <- fit$cluster
+kclust <- as.matrix(clust.out)
+kclust.out <- cbind(kclust, aggdata)
+dt1 <- data.frame(outvalue)
+dt2 <- data.frame(kclust.out[,1:2])
+dt3 <-join(dt1,dt2,type="inner")
+dt4<-subset(dt3, select=c("kclust"))
+dt5<-subset(dt3, select=-c(my_clustering))
+clustersoutput <- as.factor(dt4)
+
+modFit <- train(kclust~.,data=dt5,method="rpart")
+testing$clusters <- predict(modFit,testing)
+
+
+
+cls.scatt <- cls.scatt.data(training[,1:5], x,dist="euclidean")
+print("Intra and Inter cluster distances are")
+print(cls.scatt)
+
+
+joineddata<-rbind(training,testing)
+joineddataclusters<- joineddata$clusters
+cls.scatt1 <- cls.scatt.data(joineddata, joineddataclusters,dist="euclidean")
+print("Intra and Inter cluster distances are")
+print(cls.scatt1)
+
+
+
+clusters <- function(x, centers) {
+  # compute squared euclidean distance from each sample to each cluster center
+  tmp <- sapply(seq_len(nrow(x)),
+                function(i) apply(centers, 1,
+                                  function(v) sum((x[i, ]-v)^2)))
+  max.col(-t(tmp))  # find index of min distance
+}
+
+clusters(testing,fit$centers)
