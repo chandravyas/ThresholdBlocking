@@ -14,6 +14,7 @@ datamatrix <- as.matrix(testinputnew)
 my_dist <- distances(datamatrix)
 
 
+#The below two statements are modified to the current algorithm whose clusters are to be validated.
 
 d <- dist(datamatrix, method = "euclidean")
 matrixfit <- hclust(d, method="ward.D")  
@@ -35,6 +36,13 @@ clustout<- as.matrix(subset(dt3, select = c(kclust)))
 
 table(clusters,clustout)
 
+
+#The below a and b are arrays are to be modified. From the output given by the table statement, try to map the cluster number specified
+#by row to cluster number specified by column. This is done in order to retrieve the cluster numbers which are maximum overlapping.
+#For more details about the Cluster overlapping determination, refer to the documentation.
+#So the cluster number pairs thus determined are represented by arrays a and c where if a represents the cluster outputs from clustering algorithm,
+#the outputs in c represent its pair value obtained from clustering output of another variation of the algorithm. The pair values are related by position, i.e.,
+#a(1) and c(1) form a cluster overlap pair.
 
 a<-c(1,2,3,4,5,6,7,8,9,10,11,12,13)
 b<-c(3,5,6,13,7,12,9,8,11,1,4,10,2)
